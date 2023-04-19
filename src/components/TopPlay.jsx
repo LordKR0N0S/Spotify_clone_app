@@ -12,27 +12,50 @@ import { useGetTopChartsQuery } from '../redux/services/shazamCore';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 
-const TopChartCard = ({ song, i, activeSong, isPlaying, handlePlayClick, handlePauseClick }) => (
+const TopChartCard = ({
+  song,
+  i,
+  activeSong,
+  isPlaying,
+  handlePlayClick,
+  handlePauseClick,
+}) => (
   <div className="w-full flex flex-row items-center hover:bg-[#4c426e] py-2 p-4 rounded-lg cursor-pointer mb-2">
     <h3 className="font-bold text-base text-white mr-3">{i + 1}.</h3>
     <div className="flex-1 flex flex-row justify-between items-center">
-      <img src={song?.images?.coverart} alt={song?.title} className="w-20 h-20 rounded-lg" />
+      <img
+        src={
+          song?.images?.coverart
+            ? song.images.coverart
+            : 'https://thumbs.dreamstime.com/b/music-note-isolated-png-high-quality-illustration-sign-transparent-background-graphic-element-your-related-design-file-105223240.jpg'
+        }
+        alt={song?.title}
+        className="w-20 h-20 rounded-lg"
+      />
       <div className="flex-1 flex flex-col justify-center mx-3">
-        <Link to={`/songs/${song.key}`}>
-          <p className="text-xl font-bold text-white">{song?.title}</p>
-        </Link>
-        <Link to={`/artists/${song?.artists[0].adamid}`}>
+        {song?.artists ? (
+          <Link to={`/songs/${song.key}`}>
+            <p className="text-xl font-bold text-white">{song?.title}</p>
+          </Link>
+        ) : <p className="text-xl font-bold text-white">{song?.title}</p>}
+        {song?.artists ? (
+          <Link to={`/artists/${song?.artists[0].adamid}`}>
+            <p className="text-base text-gray-300 mt-1">{song?.subtitle}</p>
+          </Link>
+        ) : (
           <p className="text-base text-gray-300 mt-1">{song?.subtitle}</p>
-        </Link>
+        )}
       </div>
     </div>
-    <PlayPause
-      song={song}
-      activeSong={activeSong}
-      isPlaying={isPlaying}
-      handlePlay={handlePlayClick}
-      handlePause={handlePauseClick}
-    />
+    {song?.hub?.actions ? (
+      <PlayPause
+        song={song}
+        activeSong={activeSong}
+        isPlaying={isPlaying}
+        handlePlay={handlePlayClick}
+        handlePause={handlePauseClick}
+      />
+    ) : null}
   </div>
 );
 
@@ -58,7 +81,10 @@ const TopPlay = () => {
   };
 
   return (
-    <div ref={divRef} className="xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[500px] max-w-full flex flex-col">
+    <div
+      ref={divRef}
+      className="xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[500px] max-w-full flex flex-col"
+    >
       <div className="w-full flex flex-col">
         <div className="flex flex-row justify-between items-center">
           <h2 className="text-white font-bold text-2xl">Top Charts</h2>
@@ -105,14 +131,25 @@ const TopPlay = () => {
               style={{ width: '25%', height: 'auto' }}
               className="shadow-lg rounded-full animate-slideright"
             >
-              <Link to={`/artists/${song?.artists[0].adamid}`}>
-                <img src={song?.images.background} alt="name" className="rounded-full w-full object-cover" />
-              </Link>
+              {song?.artists ? (
+                <Link to={`/artists/${song?.artists[0].adamid}`}>
+                  <img
+                    src={song?.images?.background}
+                    alt="name"
+                    className="rounded-full w-full object-cover"
+                  />
+                </Link>
+              ) : (
+                <img
+                  src="https://thumbs.dreamstime.com/b/music-note-isolated-png-high-quality-illustration-sign-transparent-background-graphic-element-your-related-design-file-105223240.jpg"
+                  alt="name"
+                  className="rounded-full w-full object-cover"
+                />
+              )}
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
-
     </div>
   );
 };
